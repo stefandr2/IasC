@@ -41,12 +41,27 @@ jobs:
 
       - name: Terraform Init
         run: terraform init -input=false -backend-config=backends/dev.hcl
+        env:
+          ARM_USE_OIDC: "true"
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Terraform Plan
         run: terraform plan -input=false -var-file=environments/dev.tfvars -var="admin_password=${{ secrets.TF_ADMIN_PASSWORD }}"
+        env:
+          ARM_USE_OIDC: "true"
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Terraform Apply
         run: terraform apply -input=false -auto-approve -var-file=environments/dev.tfvars -var="admin_password=${{ secrets.TF_ADMIN_PASSWORD }}"
+        env:
+          ARM_USE_OIDC: "true"
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
   apply-test:
     name: Apply Test
@@ -75,12 +90,27 @@ jobs:
 
       - name: Terraform Init
         run: terraform init -input=false -backend-config=backends/test.hcl
+        env:
+          ARM_USE_OIDC: "true"
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Terraform Plan
         run: terraform plan -input=false -var-file=environments/test.tfvars -var="admin_password=${{ secrets.TF_ADMIN_PASSWORD }}"
+        env:
+          ARM_USE_OIDC: "true"
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Terraform Apply
         run: terraform apply -input=false -auto-approve -var-file=environments/test.tfvars -var="admin_password=${{ secrets.TF_ADMIN_PASSWORD }}"
+        env:
+          ARM_USE_OIDC: "true"
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
   apply-prod:
     name: Apply Prod
@@ -109,9 +139,24 @@ jobs:
 
       - name: Terraform Init
         run: terraform init -input=false -backend-config=backends/prod.hcl
+        env:
+          ARM_USE_OIDC: "true"
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Terraform Plan
         run: terraform plan -input=false -var-file=environments/prod.tfvars -var="admin_password=${{ secrets.TF_ADMIN_PASSWORD }}"
+        env:
+          ARM_USE_OIDC: "true"
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Terraform Apply
         run: terraform apply -input=false -auto-approve -var-file=environments/prod.tfvars -var="admin_password=${{ secrets.TF_ADMIN_PASSWORD }}"
+        env:
+          ARM_USE_OIDC: "true"
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}

@@ -60,6 +60,11 @@ jobs:
       - name: Terraform Init (dev)
         working-directory: terraform
         run: terraform init -input=false -backend-config=backends/dev.hcl
+        env:
+          ARM_USE_OIDC: "true"
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Terraform Apply (dev with package vars)
         working-directory: terraform
@@ -69,3 +74,8 @@ jobs:
             -var "admin_password=${{ secrets.TF_ADMIN_PASSWORD }}" `
             -var "gc_package_content_uri=${{ steps.publish.outputs.gc_uri }}" `
             -var "gc_package_content_hash=${{ steps.publish.outputs.gc_hash }}"
+        env:
+          ARM_USE_OIDC: "true"
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
