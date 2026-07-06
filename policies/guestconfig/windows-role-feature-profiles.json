@@ -1,0 +1,63 @@
+{
+  "tagName": "ServerRole",
+  "profiles": {
+    "Web": {
+      "description": "IIS web server baseline",
+      "windowsFeatures": [
+        "Web-Server",
+        "Web-WebServer",
+        "Web-Common-Http",
+        "Web-Default-Doc",
+        "Web-Static-Content",
+        "Web-Http-Errors",
+        "Web-Http-Logging",
+        "Web-Log-Libraries",
+        "Web-Request-Monitor",
+        "Web-Http-Tracing",
+        "Web-Stat-Compression",
+        "Web-Dyn-Compression",
+        "Web-Filtering",
+        "Web-Basic-Auth",
+        "Web-Windows-Auth",
+        "Web-Mgmt-Console"
+      ]
+    },
+    "File": {
+      "description": "File server baseline",
+      "windowsFeatures": [
+        "FS-FileServer",
+        "FS-Data-Deduplication",
+        "FS-Resource-Manager",
+        "FS-VSS-Agent"
+      ]
+    },
+    "DomainController": {
+      "description": "AD DS and DNS baseline",
+      "windowsFeatures": [
+        "AD-Domain-Services",
+        "DNS",
+        "GPMC",
+        "RSAT-AD-Tools",
+        "RSAT-AD-PowerShell"
+      ]
+    },
+    "Sql": {
+      "description": "Common SQL dependency baseline",
+      "windowsFeatures": [
+        "NET-Framework-45-Core",
+        "NET-Framework-45-Features",
+        "FS-FileServer",
+        "Failover-Clustering"
+      ]
+    },
+    "Management": {
+      "description": "Management and administration baseline",
+      "windowsFeatures": [
+        "PowerShell-7",
+        "RSAT",
+        "Windows-Defender",
+        "Server-Media-Foundation"
+      ]
+    }
+  }
+}

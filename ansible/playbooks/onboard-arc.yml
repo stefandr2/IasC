@@ -1,0 +1,6 @@
+---
+- name: Onboard Windows machines to Azure Arc
+  hosts: arc_windows
+  gather_facts: false
+  roles:
+    - role: arc_onboarding

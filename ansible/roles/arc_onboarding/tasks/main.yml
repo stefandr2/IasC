@@ -1,0 +1,31 @@
+---
+- name: Skip Arc onboarding when disabled
+  ansible.builtin.debug:
+    msg: "Arc onboarding skipped because arc_install_enabled is false."
+  when: not arc_install_enabled
+
+- name: Download Arc onboarding script
+  ansible.windows.win_get_url:
+    url: "https://aka.ms/azcmagent-windows"
+    dest: "C:\\Temp\\azcmagent.msi"
+  when: arc_install_enabled
+
+- name: Install Azure Connected Machine Agent
+  ansible.windows.win_package:
+    path: "C:\\Temp\\azcmagent.msi"
+    state: present
+  when: arc_install_enabled
+
+- name: Connect machine to Azure Arc
+  ansible.windows.win_shell: |
+    & "$env:ProgramFiles\\AzureConnectedMachineAgent\\azcmagent.exe" connect `
+      --resource-group "{{ arc_resource_group }}" `
+      --tenant-id "{{ arc_tenant_id }}" `
+      --location "{{ arc_location }}" `
+      --subscription-id "{{ arc_subscription_id }}" `
+      --service-principal-id "{{ arc_service_principal_id }}" `
+      --service-principal-secret "{{ arc_service_principal_secret }}"
+  when:
+    - arc_install_enabled
+    - arc_service_principal_id | length > 0
+    - arc_service_principal_secret | length > 0

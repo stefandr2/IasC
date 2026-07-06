@@ -1,0 +1,16 @@
+---
+ansible_connection: winrm
+ansible_port: 5986
+ansible_winrm_server_cert_validation: ignore
+ansible_winrm_transport: ntlm
+ansible_user: localadmin
+ansible_password: "ReplaceWithSecureSecret!"
+
+# Azure Arc onboarding defaults
+arc_install_enabled: false
+arc_resource_group: Nestle2
+arc_tenant_id: "9b5721a7-d9cb-42eb-95bd-146219cdcc9d"
+arc_subscription_id: "113f91f0-83f2-4b50-8e5a-111f1d89e1e1"
+arc_location: northeurope
+arc_service_principal_id: ""
+arc_service_principal_secret: ""

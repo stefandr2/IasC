@@ -1,0 +1,15 @@
+---
+ansible_connection: winrm
+ansible_port: 5986
+ansible_winrm_server_cert_validation: ignore
+ansible_winrm_transport: ntlm
+ansible_user: localadmin
+ansible_password: "ReplaceWithSecureSecret!"
+
+arc_install_enabled: false
+arc_resource_group: rg-arc-test
+arc_tenant_id: "00000000-0000-0000-0000-000000000000"
+arc_subscription_id: "00000000-0000-0000-0000-000000000000"
+arc_location: eastus2
+arc_service_principal_id: ""
+arc_service_principal_secret: ""

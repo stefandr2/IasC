@@ -1,0 +1,22 @@
+{
+  "name": "arc-windows-baseline-initiative",
+  "type": "Microsoft.Authorization/policySetDefinitions",
+  "properties": {
+    "displayName": "Arc Windows Baseline Initiative",
+    "description": "Baseline initiative for Arc-enabled Windows machines and Azure VMs.",
+    "metadata": {
+      "category": "Governance"
+    },
+    "parameters": {},
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "audit-defender-extension",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/audit-windows-defender-extension"
+      },
+      {
+        "policyDefinitionReferenceId": "audit-guest-configuration",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/audit-guest-configuration-assignment"
+      }
+    ]
+  }
+}

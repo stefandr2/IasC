@@ -1,0 +1,117 @@
+name: Terraform Apply On Commit
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: terraform-apply-main
+  cancel-in-progress: false
+
+jobs:
+  apply-dev:
+    name: Apply Dev
+    runs-on: ubuntu-latest
+    environment: dev
+    defaults:
+      run:
+        working-directory: terraform
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.8
+
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Terraform Init
+        run: terraform init -input=false -backend-config=backends/dev.hcl
+
+      - name: Terraform Plan
+        run: terraform plan -input=false -var-file=environments/dev.tfvars -var="admin_password=${{ secrets.TF_ADMIN_PASSWORD }}"
+
+      - name: Terraform Apply
+        run: terraform apply -input=false -auto-approve -var-file=environments/dev.tfvars -var="admin_password=${{ secrets.TF_ADMIN_PASSWORD }}"
+
+  apply-test:
+    name: Apply Test
+    runs-on: ubuntu-latest
+    needs: apply-dev
+    environment: test
+    defaults:
+      run:
+        working-directory: terraform
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.8
+
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Terraform Init
+        run: terraform init -input=false -backend-config=backends/test.hcl
+
+      - name: Terraform Plan
+        run: terraform plan -input=false -var-file=environments/test.tfvars -var="admin_password=${{ secrets.TF_ADMIN_PASSWORD }}"
+
+      - name: Terraform Apply
+        run: terraform apply -input=false -auto-approve -var-file=environments/test.tfvars -var="admin_password=${{ secrets.TF_ADMIN_PASSWORD }}"
+
+  apply-prod:
+    name: Apply Prod
+    runs-on: ubuntu-latest
+    needs: apply-test
+    environment: prod
+    defaults:
+      run:
+        working-directory: terraform
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.8
+
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Terraform Init
+        run: terraform init -input=false -backend-config=backends/prod.hcl
+
+      - name: Terraform Plan
+        run: terraform plan -input=false -var-file=environments/prod.tfvars -var="admin_password=${{ secrets.TF_ADMIN_PASSWORD }}"
+
+      - name: Terraform Apply
+        run: terraform apply -input=false -auto-approve -var-file=environments/prod.tfvars -var="admin_password=${{ secrets.TF_ADMIN_PASSWORD }}"

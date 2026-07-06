@@ -1,0 +1,15 @@
+---
+ansible_connection: winrm
+ansible_port: 5986
+ansible_winrm_server_cert_validation: validate
+ansible_winrm_transport: kerberos
+ansible_user: ""
+ansible_password: ""
+
+arc_install_enabled: false
+arc_resource_group: rg-arc-prod
+arc_tenant_id: "00000000-0000-0000-0000-000000000000"
+arc_subscription_id: "00000000-0000-0000-0000-000000000000"
+arc_location: eastus2
+arc_service_principal_id: ""
+arc_service_principal_secret: ""

@@ -1,0 +1,70 @@
+name: GuestConfig Package And Apply Dev
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - scripts/build-guestconfig-fileserver-package.ps1
+      - scripts/publish-guestconfig-package.ps1
+      - terraform/modules/guest_configuration_package_enforcement/**
+      - terraform/environments/dev.tfvars
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  package-and-apply-dev:
+    runs-on: windows-latest
+    environment: dev
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.8
+
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Build Guest Configuration package
+        run: |
+          Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+          ./scripts/build-guestconfig-fileserver-package.ps1 -OutputPath "artifacts/guestconfig/WindowsFileServerRole.zip"
+
+      - name: Publish Guest Configuration package
+        id: publish
+        run: |
+          $output = ./scripts/publish-guestconfig-package.ps1 `
+            -StorageAccountName "${{ secrets.GC_STORAGE_ACCOUNT_NAME }}" `
+            -ContainerName "${{ secrets.GC_STORAGE_CONTAINER_NAME }}" `
+            -PackagePath "artifacts/guestconfig/WindowsFileServerRole.zip"
+          $uri = ($output | Select-String -Pattern "^GC_PACKAGE_CONTENT_URI=").ToString().Replace("GC_PACKAGE_CONTENT_URI=", "").Trim()
+          $hash = ($output | Select-String -Pattern "^GC_PACKAGE_CONTENT_HASH=").ToString().Replace("GC_PACKAGE_CONTENT_HASH=", "").Trim()
+          "gc_uri=$uri" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "gc_hash=$hash" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+
+      - name: Terraform Init (dev)
+        working-directory: terraform
+        run: terraform init -input=false -backend-config=backends/dev.hcl
+
+      - name: Terraform Apply (dev with package vars)
+        working-directory: terraform
+        run: |
+          terraform apply -input=false -auto-approve `
+            -var-file=environments/dev.tfvars `
+            -var "admin_password=${{ secrets.TF_ADMIN_PASSWORD }}" `
+            -var "gc_package_content_uri=${{ steps.publish.outputs.gc_uri }}" `
+            -var "gc_package_content_hash=${{ steps.publish.outputs.gc_hash }}"

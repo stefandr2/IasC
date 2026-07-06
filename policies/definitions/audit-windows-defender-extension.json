@@ -1,0 +1,34 @@
+{
+  "name": "audit-windows-defender-extension",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "properties": {
+    "displayName": "Audit Windows machines without MDE extension",
+    "policyType": "Custom",
+    "mode": "Indexed",
+    "description": "Audits Windows machines that do not have the Microsoft Defender extension installed.",
+    "metadata": {
+      "category": "Security"
+    },
+    "parameters": {},
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "in": [
+              "Microsoft.Compute/virtualMachines",
+              "Microsoft.HybridCompute/machines"
+            ]
+          },
+          {
+            "field": "Microsoft.Compute/imagePublisher",
+            "equals": "MicrosoftWindowsServer"
+          }
+        ]
+      },
+      "then": {
+        "effect": "audit"
+      }
+    }
+  }
+}

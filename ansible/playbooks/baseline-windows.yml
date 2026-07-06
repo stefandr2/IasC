@@ -1,0 +1,12 @@
+---
+- name: Apply common Windows baseline
+  hosts: windows
+  gather_facts: false
+  roles:
+    - role: common_windows
+
+- name: Apply update baseline
+  hosts: windows
+  gather_facts: false
+  roles:
+    - role: windows_update_baseline

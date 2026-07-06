@@ -1,0 +1,14 @@
+---
+- name: Ensure Windows Update service is automatic
+  ansible.windows.win_service:
+    name: wuauserv
+    start_mode: auto
+    state: started
+
+- name: Install security and critical updates
+  ansible.windows.win_updates:
+    category_names:
+      - CriticalUpdates
+      - SecurityUpdates
+    reboot: true
+    reboot_timeout: 3600
