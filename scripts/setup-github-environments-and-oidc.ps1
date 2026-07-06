@@ -114,11 +114,12 @@ function Ensure-FederatedCredential {
 
   $credentialName = "github-$($Repo.Replace('/','-'))-$EnvironmentName"
   $tempFile = [System.IO.Path]::GetTempFileName()
+  $subject = "repo:${Repo}:environment:${EnvironmentName}"
 
   $fc = @{
     name      = $credentialName
     issuer    = "https://token.actions.githubusercontent.com"
-    subject   = "repo:$Repo:environment:$EnvironmentName"
+    subject   = $subject
     audiences = @("api://AzureADTokenExchange")
   } | ConvertTo-Json -Depth 5
 
