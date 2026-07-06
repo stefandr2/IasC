@@ -35,49 +35,8 @@ aum_windows_tag_schedules = {
   }
 }
 
-# Tag-based Guest Configuration assignments for Windows role/feature baselines.
-# Parameter keys must match the selected policy definition.
-guest_configuration_tag_assignments = {
-  gc-windows-web-features = {
-    policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/11111111-1111-1111-1111-111111111111"
-    display_name         = "GC - Windows Web feature baseline by tag"
-    description          = "Applies Windows web feature checks to machines tagged ServerRole=Web"
-    parameters = {
-      tagName               = "ServerRole"
-      tagValues             = ["Web"]
-      listOfWindowsFeatures = [
-        "Web-Server",
-        "Web-WebServer",
-        "Web-Common-Http",
-        "Web-Default-Doc",
-        "Web-Static-Content",
-        "Web-Http-Logging",
-        "Web-Windows-Auth",
-        "Web-Mgmt-Console"
-      ]
-      effect = "AuditIfNotExists"
-    }
-  }
+# Tag-based Guest Configuration assignments - leave empty until real policy definition IDs are available.
+guest_configuration_tag_assignments = {}
 
-  gc-windows-file-features = {
-    policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/22222222-2222-2222-2222-222222222222"
-    display_name         = "GC - Windows File feature baseline by tag"
-    description          = "Applies Windows file server feature checks to machines tagged ServerRole=File"
-    parameters = {
-      tagName               = "ServerRole"
-      tagValues             = ["File"]
-      listOfWindowsFeatures = [
-        "FS-FileServer",
-        "FS-Data-Deduplication",
-        "FS-Resource-Manager"
-      ]
-      effect = "AuditIfNotExists"
-    }
-  }
-}
-
-# Add built-in or custom policy definition IDs.
-policy_definition_ids = {
-  "audit-defender-agent-on-machines" = "/providers/Microsoft.Authorization/policyDefinitions/00000000-0000-0000-0000-000000000001"
-  "enable-guest-configuration"       = "/providers/Microsoft.Authorization/policyDefinitions/00000000-0000-0000-0000-000000000002"
-}
+# Add built-in or custom policy definition IDs - leave empty until real IDs are confirmed.
+policy_definition_ids = {}
